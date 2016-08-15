@@ -14,7 +14,12 @@ document.addEventListener('mousemove', function (e) {
       var mouseHeight = event.pageY;
       var mouseWidth = event.pageX;
       var bodyHeight = $(window).scrollTop() + $(window).height();
+      var windowHeight = $(window).height();
       var bodyWidth = $(window).width();
+
+      $('#' + imgId).css('max-width', 'none');
+      $('#' + imgId).css('max-height', 'none');
+
       $('#' + imgId)
         .attr('src', 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + srcElement.href)
         .one("load", function() {
@@ -26,10 +31,15 @@ document.addEventListener('mousemove', function (e) {
           var top = mouseHeight;
 
           var imageHeight = $('#' + imgId).height();
-          if(imageHeight > bottom && bodyHeight > imageHeight){
-            top = bodyHeight - imageHeight;
-            if(imageHeight + 20 > bottom){
-              top -= 20;
+          if(imageHeight > bottom){
+            if(windowHeight > imageHeight) {
+              top = bodyHeight - imageHeight;
+              if(imageHeight + 20 > bottom){
+                top -= 20;
+              }
+            } else{
+              top = $(window).scrollTop() + 20;
+              $('#' + imgId).css('max-height', windowHeight - 40);
             }
           }
 
@@ -37,10 +47,15 @@ document.addEventListener('mousemove', function (e) {
           var left = mouseWidth;
 
           var imageWidth = $('#' + imgId).width();
-          if(imageWidth > right && bodyWidth > imageWidth){
-            left = bodyWidth - imageWidth;
-            if(imageWidth + 20 > right){
-              left -= 20;
+          if(imageWidth > right){
+            if(bodyWidth > imageWidth) {
+              left = bodyWidth - imageWidth;
+              if(imageWidth + 20 > right){
+                left -= 20;
+              }
+            } else{
+              left = 20;
+              $('#' + imgId).css('max-width', bodyWidth - 40);
             }
           }
 
