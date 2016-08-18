@@ -30,3 +30,10 @@
   background-position: center center;
   background-repeat: no-repeat;
 }
+
+.abioka-messagepop-loading{
+  width:34px;
+  height:34px;
+  padding:0 !important;
+  cursor: wait;
+}

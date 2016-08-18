@@ -1,7 +1,10 @@
 var prevHref = "";
+var isVisible = false;
 var popupId = getId();
 var imgId = getId();
-var popup = "<div id='" + popupId + "' class='abioka-messagepop'><img id='" + imgId + "'></img></div>"
+var popup = "<div id='" + popupId + "' class='abioka-messagepop'><img id='" + imgId + "'></img></div>";
+var loadingUrl = chrome.extension.getURL('loading.gif');
+popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-messagepop-loading'><img src='" + loadingUrl + "'></img></div>"
 $( "body" ).append(popup);
 
 document.addEventListener('mousemove', function (e) {
@@ -19,6 +22,15 @@ document.addEventListener('mousemove', function (e) {
 
       $('#' + imgId).css('max-width', 'none');
       $('#' + imgId).css('max-height', 'none');
+
+      setTimeout(function(){
+        if(isVisible)
+          return;
+
+        $('#loading_' + popupId).css('left', mouseWidth);
+        $('#loading_' + popupId).css('top', mouseHeight);
+        $('#loading_' + popupId).css('display','inline');
+      }, 1000);
 
       $('#' + imgId)
         .attr('src', 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + srcElement.href)
@@ -62,15 +74,26 @@ document.addEventListener('mousemove', function (e) {
           $('#' + popupId).css('left', left);
           $('#' + popupId).css('top', top);
           $('#' + popupId).css('display','inline');
+          $('#loading_' + popupId).css('display','none');
+          isVisible = true;
+        })
+        .on("error", function() {
+          closePopup();
         });
     }
 
     prevHref = srcElement.href;
   } else {
     prevHref = "";
-    $('#' + popupId).css('display','none');
+    closePopup();
   }
 }, false);
+
+function closePopup(){
+  $('#' + popupId).css('display','none');
+  $('#loading_' + popupId).css('display','none');
+  isVisible = false;
+};
 
 function getId(){
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
