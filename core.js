@@ -5,7 +5,7 @@ var imgId = getId();
 var popup = "<div id='" + popupId + "' class='abioka-messagepop'><img id='" + imgId + "'></img></div>";
 var loadingUrl = chrome.extension.getURL('loading.gif');
 popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-messagepop-loading'><img src='" + loadingUrl + "'></img></div>"
-$( "body" ).append(popup);
+appendToBody(popup);
 
 document.addEventListener('mousemove', function (e) {
   var srcElement = e.srcElement;
@@ -16,33 +16,34 @@ document.addEventListener('mousemove', function (e) {
     if(prevHref !== srcElement.href){
       var mouseHeight = event.pageY;
       var mouseWidth = event.pageX;
-      var bodyHeight = $(window).scrollTop() + $(window).height();
-      var windowHeight = $(window).height();
-      var bodyWidth = $(window).width();
 
-      $('#' + imgId).css('max-width', 'none');
-      $('#' + imgId).css('max-height', 'none');
+      css(imgId, 'max-width', 'none');
+      css(imgId, 'max-height', 'none');
 
       setTimeout(function(){
         if(isVisible)
           return;
 
-        $('#loading_' + popupId).css('left', mouseWidth);
-        $('#loading_' + popupId).css('top', mouseHeight);
-        $('#loading_' + popupId).css('display','inline');
+        css('loading_' + popupId, 'left', mouseWidth + "px");
+        css('loading_' + popupId, 'top', mouseHeight + "px");
+        css('loading_' + popupId, 'display','inline');
       }, 1000);
 
-      $('#' + imgId)
-        .attr('src', 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + srcElement.href)
-        .one("load", function() {
-          $('#' + popupId).css('left', mouseWidth);
-          $('#' + popupId).css('top', mouseHeight);
-          $('#' + popupId).css('display','inline');
+      var img = document.getElementById(imgId);
+      img.src = 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + srcElement.href;
+      img.addEventListener('load', function() {
+          var bodyHeight = window.scrollY + document.documentElement.clientHeight;
+          var windowHeight = document.documentElement.clientHeight;
+          var bodyWidth = document.documentElement.clientWidth;
+
+          css(popupId, 'left', mouseWidth + "px");
+          css(popupId, 'top', mouseHeight + "px");
+          css(popupId, 'display','inline');
 
           var bottom = bodyHeight - mouseHeight;
           var top = mouseHeight;
 
-          var imageHeight = $('#' + imgId).height();
+          var imageHeight = document.getElementById(imgId).offsetHeight;
           if(imageHeight > bottom){
             if(windowHeight > imageHeight) {
               top = bodyHeight - imageHeight;
@@ -50,15 +51,15 @@ document.addEventListener('mousemove', function (e) {
                 top -= 20;
               }
             } else{
-              top = $(window).scrollTop() + 20;
-              $('#' + imgId).css('max-height', windowHeight - 40);
+              top = window.scrollY + 20;
+              css(imgId, 'max-height', windowHeight - 40 + "px");
             }
           }
 
           var right = bodyWidth - mouseWidth;
           var left = mouseWidth;
 
-          var imageWidth = $('#' + imgId).width();
+          var imageWidth = document.getElementById(imgId).offsetWidth;
           if(imageWidth > right){
             if(bodyWidth > imageWidth) {
               left = bodyWidth - imageWidth;
@@ -67,19 +68,20 @@ document.addEventListener('mousemove', function (e) {
               }
             } else{
               left = 20;
-              $('#' + imgId).css('max-width', bodyWidth - 40);
+              css(imgId, 'max-width', bodyWidth - 40 + "px");
             }
           }
 
-          $('#' + popupId).css('left', left);
-          $('#' + popupId).css('top', top);
-          $('#' + popupId).css('display','inline');
-          $('#loading_' + popupId).css('display','none');
+          css(popupId, 'left', left + "px");
+          css(popupId, 'top', top + "px");
+          css(popupId, 'display','inline');
+          css('loading_' + popupId, 'display','none');
           isVisible = true;
-        })
-        .on("error", function() {
+        }, false);
+
+        img.addEventListener('error', function() {
           closePopup();
-        });
+        }, false);
     }
 
     prevHref = srcElement.href;
@@ -90,10 +92,18 @@ document.addEventListener('mousemove', function (e) {
 }, false);
 
 function closePopup(){
-  $('#' + popupId).css('display','none');
-  $('#loading_' + popupId).css('display','none');
+  css(popupId, 'display','none');
+  css('loading_' + popupId, 'display','none');
   isVisible = false;
 };
+
+function appendToBody(html){
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function css(id, key, value){
+  document.getElementById(id).style[key] = value;
+}
 
 function getId(){
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
