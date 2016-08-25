@@ -7,12 +7,14 @@ var loadingUrl = chrome.extension.getURL('loading.gif');
 popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-messagepop-loading'><img src='" + loadingUrl + "'></img></div>"
 appendToBody(popup);
 
+var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com"];
+
 document.addEventListener('mousemove', function (e) {
   var srcElement = e.srcElement;
   if(srcElement.id === imgId)
     return;
 
-  if (srcElement.nodeName == 'A' && (srcElement.hostname == "imgur.com" || srcElement.hostname == "i.imgur.com" || srcElement.hostname == "hizliresim.com" || srcElement.hostname == "i.hizliresim.com" )) {
+  if (srcElement.nodeName == 'A' && (validHosts.indexOf(srcElement.hostname) > -1 || validHosts.indexOf(srcElement.hostname.split('.').slice(-2).join('.')) > -1)) {
     if(prevHref !== srcElement.href){
       var mouseHeight = event.pageY;
       var mouseWidth = event.pageX;
@@ -30,7 +32,8 @@ document.addEventListener('mousemove', function (e) {
       }, 1000);
 
       var img = document.getElementById(imgId);
-      img.src = 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + srcElement.href;
+      var url = getUrl(srcElement.hostname, srcElement.href, srcElement.pathname);
+      img.src = 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + url;
       img.addEventListener('load', function() {
           var bodyHeight = window.scrollY + document.documentElement.clientHeight;
           var windowHeight = document.documentElement.clientHeight;
@@ -110,4 +113,14 @@ function getId(){
       var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
       return v.toString(16);
   });
+}
+
+function getUrl(hostname, fullUrl, pathName){
+  var result = fullUrl;
+  if(hostname === "imgur.com"){
+    result = "http://i.imgur.com/" + pathName.substr(pathName.indexOf('gallery/') + 'gallery/'.length) + ".png";
+  } else if(hostname === "hizliresim.com"){
+    result = "http://i.hizliresim.com/" + pathName + ".png";
+  }
+  return result;
 }
