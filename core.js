@@ -9,6 +9,27 @@ appendToBody(popup);
 
 var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com"];
 
+var xmlHttp = null;
+var baseUrl = "https://stream-viper.hyperdev.space/?url=";
+
+chrome.storage.local.get('abiokaBaseUrl', function(result){
+  if(!result || !result.abiokaBaseUrl){
+      xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = SetLocalStorage;
+      xmlHttp.open( "GET", "https://stream-viper.hyperdev.space/", true );
+      xmlHttp.send( null );
+    } else {
+      baseUrl = result.abiokaBaseUrl;
+    }
+});
+
+function SetLocalStorage() {
+  if (xmlHttp.status == 403 ) {
+    baseUrl = "http://littlethingsapi.abioka.com/api/imageviewer?url=";
+  }
+  chrome.storage.local.set({'abiokaBaseUrl': baseUrl});
+}
+
 document.addEventListener('mousemove', function (e) {
   var srcElement = e.srcElement;
   if(srcElement.id === imgId)
@@ -33,7 +54,7 @@ document.addEventListener('mousemove', function (e) {
 
       var img = document.getElementById(imgId);
       var url = getUrl(srcElement.hostname, srcElement.href, srcElement.pathname);
-      img.src = 'http://littlethingsapi.abioka.com/api/imageviewer?url=' + url;
+      img.src = baseUrl + url;
       img.addEventListener('load', function() {
           var bodyHeight = window.scrollY + document.documentElement.clientHeight;
           var windowHeight = document.documentElement.clientHeight;
