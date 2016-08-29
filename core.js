@@ -10,13 +10,13 @@ appendToBody(popup);
 var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com"];
 
 var xmlHttp = null;
-var baseUrl = "https://stream-viper.hyperdev.space/?url=";
+var baseUrl = "http://littlethingsapi.abioka.com/api/imageviewer?url=";
 
 chrome.storage.local.get('abiokaBaseUrl', function(result){
   if(!result || !result.abiokaBaseUrl){
       xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = SetLocalStorage;
-      xmlHttp.open( "GET", "https://stream-viper.hyperdev.space/", true );
+      xmlHttp.open( "GET", "https://stream-viper.hyperdev.space/echo", true );
       xmlHttp.send( null );
     } else {
       baseUrl = result.abiokaBaseUrl;
@@ -24,8 +24,8 @@ chrome.storage.local.get('abiokaBaseUrl', function(result){
 });
 
 function SetLocalStorage() {
-  if (xmlHttp.status == 403 ) {
-    baseUrl = "http://littlethingsapi.abioka.com/api/imageviewer?url=";
+  if (xmlHttp.status == 200 ) {
+    baseUrl = "https://stream-viper.hyperdev.space/?url=";
   }
   chrome.storage.local.set({'abiokaBaseUrl': baseUrl});
 }
