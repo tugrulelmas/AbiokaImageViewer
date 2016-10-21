@@ -7,7 +7,7 @@ var pkg = require('./package.json');
 
 // Set the banner content
 var banner = ['/*!\n',
-    ' * abioka- <%= pkg.title %> v<%= pkg.version %> (<%= pkg.homepage %>)\n',
+    ' * abioka - <%= pkg.title %> v<%= pkg.version %> (<%= pkg.homepage %>)\n',
     ' * Copyright 2016-' + (new Date()).getFullYear(), ' <%= pkg.author %>\n',
     ' * Licensed under <%= pkg.license.type %> (<%= pkg.license.url %>)\n',
     ' */\n',
@@ -15,7 +15,7 @@ var banner = ['/*!\n',
 ].join('');
 
 // Default task
-gulp.task('default', ['minify-css', 'minify-js', 'copy']);
+gulp.task('default', ['copy-css-js', 'copy']);
 
 // Minify CSS
 gulp.task('minify-css', function() {
@@ -29,6 +29,12 @@ gulp.task('minify-css', function() {
 gulp.task('minify-js', function() {
     return gulp.src('core.js')
         .pipe(uglify())
+        .pipe(header(banner, { pkg: pkg }))
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('copy-css-js', function() {
+    return gulp.src(['core.js', 'core.css'])
         .pipe(header(banner, { pkg: pkg }))
         .pipe(gulp.dest('dist'));
 });
