@@ -44,7 +44,6 @@ gulp.task('copy', function() {
             'icon16.png',
             'icon32.png',
             'icon48.png',
-            'icon64.png',
             'icon128.png',
             'loading.gif',
             'manifest.json'

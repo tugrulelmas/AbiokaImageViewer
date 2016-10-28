@@ -4,31 +4,14 @@ var popupId = getId();
 var imgId = getId();
 var popup = "<div id='" + popupId + "' class='abioka-messagepop'><img id='" + imgId + "'></img></div>";
 var loadingUrl = chrome.extension.getURL('loading.gif');
-popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-messagepop-loading'><img src='" + loadingUrl + "'></img></div>"
+popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-messagepop-loading'><img src='" + loadingUrl + "'></img></div>";
+popup += "<img style='display:none' id='temp_" + imgId + "'></img>";
 appendToBody(popup);
 
 var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com"];
-
-var xmlHttp = null;
-var baseUrl = "http://littlethingsapi.abioka.com/api/imageviewer?url=";
-
-chrome.storage.local.get('abiokaBaseUrl', function(result){
-  if(!result || !result.abiokaBaseUrl){
-      xmlHttp = new XMLHttpRequest();
-      xmlHttp.onreadystatechange = SetLocalStorage;
-      xmlHttp.open( "GET", "https://stream-viper.hyperdev.space/echo", true );
-      xmlHttp.send( null );
-    } else {
-      baseUrl = result.abiokaBaseUrl;
-    }
-});
-
-function SetLocalStorage() {
-  if (xmlHttp.status == 200 ) {
-    baseUrl = "https://stream-viper.hyperdev.space/?url=";
-  }
-  chrome.storage.local.set({'abiokaBaseUrl': baseUrl});
-}
+var baseUrl = "https://stream-viper.hyperdev.space/?url=";
+var img = document.getElementById(imgId);
+var isError = false;
 
 document.addEventListener('mousemove', function (e) {
   var srcElement = e.srcElement;
@@ -37,6 +20,7 @@ document.addEventListener('mousemove', function (e) {
 
   if (srcElement.nodeName == 'A' && (validHosts.indexOf(srcElement.hostname) > -1 || validHosts.indexOf(srcElement.hostname.split('.').slice(-2).join('.')) > -1)) {
     if(prevHref !== srcElement.href){
+      isError = false;
       var mouseHeight = event.pageY;
       var mouseWidth = event.pageX;
 
@@ -44,7 +28,7 @@ document.addEventListener('mousemove', function (e) {
       css(imgId, 'max-height', 'none');
 
       setTimeout(function(){
-        if(isVisible)
+        if(isVisible || isError)
           return;
 
         css('loading_' + popupId, 'left', mouseWidth + "px");
@@ -52,7 +36,6 @@ document.addEventListener('mousemove', function (e) {
         css('loading_' + popupId, 'display','inline');
       }, 1000);
 
-      var img = document.getElementById(imgId);
       var url = getUrl(srcElement.hostname, srcElement.href, srcElement.pathname);
       img.src = baseUrl + url;
       img.addEventListener('load', function() {
@@ -67,7 +50,7 @@ document.addEventListener('mousemove', function (e) {
           var bottom = bodyHeight - mouseHeight;
           var top = mouseHeight;
 
-          var imageHeight = document.getElementById(imgId).offsetHeight;
+          var imageHeight = img.offsetHeight;
           if(imageHeight > bottom){
             if(windowHeight > imageHeight) {
               top = bodyHeight - imageHeight;
@@ -83,7 +66,7 @@ document.addEventListener('mousemove', function (e) {
           var right = bodyWidth - mouseWidth;
           var left = mouseWidth;
 
-          var imageWidth = document.getElementById(imgId).offsetWidth;
+          var imageWidth = img.offsetWidth;
           if(imageWidth > right){
             if(bodyWidth > imageWidth) {
               left = bodyWidth - imageWidth;
@@ -102,10 +85,6 @@ document.addEventListener('mousemove', function (e) {
           css('loading_' + popupId, 'display','none');
           isVisible = true;
         }, false);
-
-        img.addEventListener('error', function() {
-          closePopup();
-        }, false);
     }
 
     prevHref = srcElement.href;
@@ -113,6 +92,20 @@ document.addEventListener('mousemove', function (e) {
     prevHref = "";
     closePopup();
   }
+}, false);
+
+// check the hyperdev is available now.
+var tempImg = document.getElementById('temp_' + imgId);
+tempImg.src = "https://cdn.hyperdev.com/c5a3c253-8ef5-4f27-bac0-6b98c09569f9%2Fsample.jpg";
+tempImg.addEventListener('error', function() {
+  // hyperdev is not available now.
+  // use abioka server
+  baseUrl = "http://littlethingsapi.abioka.com/api/imageviewer?url=";
+}, false);
+
+img.addEventListener('error', function() {
+  closePopup();
+  isError = true;
 }, false);
 
 function closePopup(){
