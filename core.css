@@ -1,39 +1,39 @@
 .abioka-messagepop {
-  border:1px solid #999999;
+  border:1px solid #999999 !important;
   display:none;
-  position:absolute;
-  border: 1px solid rgb(227, 227, 227);
-  line-height: 0;
-  overflow: hidden;
-  padding: 2px;
-  margin: 0px;
-  z-index: 2147483647;
-  border-radius: 3px;
-  box-shadow: rgba(0, 0, 0, 0.458824) 3px 3px 6px;
-  opacity: 1;
-  cursor: pointer;
-  background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(255, 255, 255)), color-stop(0.5, rgb(255, 255, 255)), to(rgb(237, 237, 237)));
+  position:absolute !important;
+  border: 1px solid rgb(227, 227, 227) !important;
+  line-height: 0 !important;
+  overflow: hidden !important;
+  padding: 2px !important;
+  margin: 0px !important;
+  z-index: 2147483647 !important;
+  border-radius: 3px !important;
+  box-shadow: rgba(0, 0, 0, 0.458824) 3px 3px 6px !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+  background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(255, 255, 255)), color-stop(0.5, rgb(255, 255, 255)), to(rgb(237, 237, 237))) !important;
 }
 
 .abioka-messagepop img {
-  border: none;
-  opacity: 1;
-  position: static;
-  max-height: none;
-  max-width: none;
-  left: auto;
-  top: auto;
-  margin: 0px;
-  padding: 0px;
-  border-radius: 0px;
-  background-size: 100% 100%;
-  background-position: center center;
-  background-repeat: no-repeat;
+  border: none !important;
+  opacity: 1 !important;
+  position: static !important;
+  max-height: none !important;
+  max-width: none !important;
+  left: auto !important;
+  top: auto !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  border-radius: 0px !important;
+  background-size: 100% 100% !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
 }
 
 .abioka-messagepop-loading{
-  width:34px;
-  height:34px;
+  width:34px !important;
+  height:34px !important;
   padding:0 !important;
-  cursor: wait;
+  cursor: wait !important;
 }
