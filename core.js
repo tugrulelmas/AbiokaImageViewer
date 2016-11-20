@@ -8,7 +8,7 @@ popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-mess
 appendToBody(popup);
 
 var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com"];
-var baseUrl = "https://stream-viper.hyperdev.space/?url=";
+var baseUrl = "";
 var img = document.getElementById(imgId);
 var isError = false;
 
@@ -41,7 +41,13 @@ document.addEventListener('mousemove', function(e) {
         }, 1000);
 
         var url = getUrl(srcElement.hostname, srcElement.href, srcElement.pathname);
-        loadImage(baseUrl + url, mouseHeight, mouseWidth);
+        if(baseUrl === ""){
+          loadTempImage(function(){
+            loadImage(baseUrl + url, mouseHeight, mouseWidth);
+          });
+        } else {
+          loadImage(baseUrl + url, mouseHeight, mouseWidth);
+        }
     }
 
     prevHref = srcElement.href;
@@ -51,11 +57,20 @@ function loadImage(url, mouseHeight, mouseWidth) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'blob';
+    xhr.setRequestHeader("Cache-Control", "max-age=0");
     xhr.onload = function(e) {
+      if(this.status === 404){
+        if(url.endsWith('.jpg'))
+          return;
+
+        var newUrl = url.substr(0, url.length - 4) + ".jpg";
+        loadImage(newUrl, mouseHeight, mouseWidth);
+      } else {
         img.src = window.URL.createObjectURL(this.response);
         img.addEventListener('load', function() {
             setImagePosition(mouseWidth, mouseHeight);
         }, false);
+      }
     };
 
     xhr.send();
@@ -109,14 +124,20 @@ function setImagePosition(mouseWidth, mouseHeight) {
     isVisible = true;
 }
 
-function loadTempImage() {
+function loadTempImage(callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', "https://cdn.hyperdev.com/c5a3c253-8ef5-4f27-bac0-6b98c09569f9%2Fsample.jpg", true);
+    //xhr.open('GET', "https://cdn.hyperdev.com/c5a3c253-8ef5-4f27-bac0-6b98c09569f9%2Fsampleasda.jpg", true);
     xhr.responseType = 'blob';
-    xhr.onerror = function(e) {
+    xhr.onload = function(){
+      if(this.status === 200){
+        baseUrl = "https://stream-viper.hyperdev.space/?url=";
+      } else {
         // hyperdev is not available now.
         // use abioka server
         baseUrl = "http://littlethingsapi.abioka.com/api/imageviewer?url=";
+      }
+      callback();
     };
 
     xhr.send();
@@ -155,8 +176,6 @@ function getUrl(hostname, fullUrl, pathName) {
 }
 
 function init() {
-    loadTempImage();
-
     img.addEventListener('error', function() {
         closePopup();
         isError = true;
