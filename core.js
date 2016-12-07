@@ -127,11 +127,10 @@ function setImagePosition(mouseWidth, mouseHeight) {
 function loadTempImage(callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', "https://cdn.hyperdev.com/c5a3c253-8ef5-4f27-bac0-6b98c09569f9%2Fsample.jpg", true);
-    //xhr.open('GET', "https://cdn.hyperdev.com/c5a3c253-8ef5-4f27-bac0-6b98c09569f9%2Fsampleasda.jpg", true);
     xhr.responseType = 'blob';
     xhr.onload = function(){
       if(this.status === 200){
-        baseUrl = "https://stream-viper.hyperdev.space/?url=";
+        baseUrl = "https://stream-viper.gomix.me/?url=";
       } else {
         // hyperdev is not available now.
         // use abioka server

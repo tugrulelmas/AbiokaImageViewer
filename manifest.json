@@ -3,14 +3,14 @@
   "name": "Abioka resim yükleyici",
   "short_name": "Abioka RY",
   "description": "Linkleri resim olarak görün. Görmek istediğiniz resim linkinin üzerine fareyi getirin.",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "icons": {"16": "icon16.png", "32": "icon32.png", "48": "icon48.png", "128": "icon128.png"},
   "author": "abioka.com",
   "homepage_url": "http://abioka.com",
   "web_accessible_resources": ["loading.gif"],
   "permissions": [
     "https://cdn.hyperdev.com/*",
-    "https://stream-viper.hyperdev.space/*",
+    "https://stream-viper.gomix.me/*",
     "http://littlethingsapi.abioka.com/*"
   ],
   "content_scripts": [
