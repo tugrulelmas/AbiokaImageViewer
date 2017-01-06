@@ -1,5 +1,5 @@
 # AbiokaImageViewer
-it is a google chrome extension to view images of imgur and hizliresim on page you visited.
+It is a google chrome extension to view images of imgur and hizliresim on page you visited. Images are downloaded from a proxy site (such as https://stream-viper.gomix.me) to pass firewall that bans imgur.com or hizliresim.com.
 
 ## Installation
 - Simply download or clone this code.
