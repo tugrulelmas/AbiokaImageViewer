@@ -7,7 +7,7 @@ var loadingUrl = chrome.extension.getURL('loading.gif');
 popup += "<div id='loading_" + popupId + "' class='abioka-messagepop abioka-messagepop-loading'><img src='" + loadingUrl + "'></img></div>";
 appendToBody(popup);
 
-var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com"];
+var validHosts = ["imgur.com", "hizliresim.com", "pbs.twimg.com", "postimg.org", "tinypic.com", "eksiup.com"];
 var baseUrl = "";
 var img = document.getElementById(imgId);
 var isError = false;
@@ -170,6 +170,8 @@ function getUrl(hostname, fullUrl, pathName) {
         result = "http://i.imgur.com/" + pathName.substr(pathName.indexOf('gallery/') + 'gallery/'.length) + ".png";
     } else if (hostname === "hizliresim.com") {
         result = "http://i.hizliresim.com/" + pathName + ".png";
+    } else if (hostname === "eksiup.com"){
+        result = "https://s1.eksiup.com/" + pathName + ".jpg";
     }
     return result;
 }
